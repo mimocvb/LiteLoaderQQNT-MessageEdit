@@ -3,7 +3,7 @@
     "type": "extension",
     "name": "QQ消息修改",
     "slug": "MessageEdit",
-    "description": "右键点击文本消息，选择【修改消息内容】修改即可",
+    "description": "聊天界面，右键点击文本消息，选择【修改消息内容】编辑即可",
     "version": "1.0.1",
     "thumbnail": "./icon.png",
     "author": {
