@@ -32,9 +32,12 @@ function onLoad() {
 
         if (qContextMenuElement) {
 
+            if (qContextMenuElement.querySelector("#mimo_msg_btn")) return
+
             var clickedElement = event.target;
 
             var separatorDiv = document.createElement("div");
+            separatorDiv.id = "mimo_msg_btn"
             separatorDiv.className = "q-context-menu-separator";
             separatorDiv.setAttribute("role", "separator");
             qContextMenuElement.appendChild(separatorDiv);
@@ -44,11 +47,22 @@ function onLoad() {
             deleteLink.setAttribute("aria-disabled", "false");
             deleteLink.setAttribute("role", "menuitem");
             deleteLink.setAttribute("tabindex", "-1");
+
+            var icons = document.createElement('div');
+            icons.className = 'q-context-menu-item__icon q-context-menu-item__head';
+            icons.innerHTML = `
+                <i class="q-icon" data-v-717ec976="" style="--b4589f60: inherit; --6ef2e80d: 16px;">
+                    <svg t="1691424497881" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4753" width="16" height="16">
+                        <path d="M686.4 224c-6.4-6.4-6.4-16 0-22.4l68-68c6.4-6.4 16-6.4 22.4 0l112.8 112.8c6.4 6.4 6.4 16 0 22.4l-68 68c-6.4 6.4-16 6.4-22.4 0L686.4 224zM384 776l372-372c5.6-5.6 4.8-15.2-1.6-20.8L641.6 269.6c-6.4-6.4-16-7.2-20.8-1.6L248 640l-56 192 192-56zM64 896v64h896v-64H64z" p-id="4754"></path>
+                    </svg>
+                </i>
+            `;
             
             var deleteLinkText = document.createElement("span");
             deleteLinkText.className = "q-context-menu-item__text";
-            deleteLinkText.textContent = "修改消息内容";
+            deleteLinkText.textContent = "编辑消息内容";
 
+            deleteLink.appendChild(icons);
             deleteLink.appendChild(deleteLinkText);
             qContextMenuElement.appendChild(deleteLink);
 
@@ -57,7 +71,7 @@ function onLoad() {
                 qContextMenu.remove();
 
                 Swal.fire({
-                    title: '请输入修改的内容',
+                    title: '编辑消息内容',
                     input: 'text',
                     inputAttributes: {
                         autocapitalize: 'off'
@@ -80,6 +94,13 @@ function onLoad() {
                     }
                 });
             });
+
+            var elementRect = qContextMenuElement.getBoundingClientRect();
+
+            if (elementRect.bottom > window.innerHeight) {
+                var currentTop = parseFloat(qContextMenuElement.style.top) || 0;
+                qContextMenuElement.style.top = (currentTop - 80) + 'px';
+            }
         }
     });
 }
