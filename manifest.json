@@ -15,7 +15,7 @@
         "branch": "main",
         "use_release": {
             "tag": "latest",
-            "name": "Test.zip"
+            "name": "MessageEdit.zip"
         }
     },
     "platform": [
