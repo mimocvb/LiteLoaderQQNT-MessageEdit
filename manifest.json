@@ -1,10 +1,10 @@
 {
     "manifest_version": 3,
     "type": "extension",
-    "name": "QQ消息临时修改插件",
+    "name": "QQ消息修改",
     "slug": "MessageEdit",
-    "description": "QQ消息临时修改插件",
-    "version": "1.0.0",
+    "description": "右键点击文本消息，选择【修改消息内容】修改即可",
+    "version": "1.0.1",
     "thumbnail": "./icon.png",
     "author": {
         "name": "MIMO",
