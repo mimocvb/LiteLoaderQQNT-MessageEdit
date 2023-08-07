@@ -12,7 +12,7 @@
     },
     "repository": {
         "repo": "LiteLoaderQQNT-MessageEdit",
-        "branch": "main",
+        "branch": "v3",
         "use_release": {
             "tag": "latest",
             "name": "MessageEdit.zip"
