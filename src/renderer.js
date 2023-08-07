@@ -93,6 +93,5 @@ function onConfigView(view) {
 
 // 这两个函数都是可选的
 export {
-    onLoad,
-    onConfigView
+    onLoad
 }
