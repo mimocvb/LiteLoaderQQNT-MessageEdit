@@ -1,0 +1,31 @@
+{
+    "manifest_version": 3,
+    "type": "extension",
+    "name": "QQ消息临时修改插件",
+    "slug": "MessageEdit",
+    "description": "QQ消息临时修改插件",
+    "version": "1.0.0",
+    "thumbnail": "./icon.png",
+    "author": {
+        "name": "MIMO",
+        "link": "https://github.com/mimocvb"
+    },
+    "repository": {
+        "repo": "LiteLoaderQQNT-MessageEdit",
+        "branch": "main",
+        "use_release": {
+            "tag": "latest",
+            "name": "Test.zip"
+        }
+    },
+    "platform": [
+        "win32",
+        "linux",
+        "darwin"
+    ],
+    "injects": {
+        "renderer": "./src/renderer.js",
+        "main": "./src/main.js",
+        "preload": "./src/preload.js"
+    }
+}
