@@ -21,7 +21,7 @@ function MenuEven(event) {
     if (url.indexOf("#/main/message") == -1 && url.indexOf("#/chat/") == -1) return;
 
     var clickedElement = event.target;
-    if (clickedElement.tagName === 'IMG') return;
+    if (clickedElement.tagName === 'IMG' || clickedElement.id === "qContextMenu") return;
 
     var qThemeValue = document.body.getAttribute('q-theme');
     var qContextMenuElement = document.querySelector("#qContextMenu.q-context-menu.q-context-menu__mixed-type");
