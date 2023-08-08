@@ -87,11 +87,17 @@ function MenuEven(event) {
             });
         });
 
-        var elementRect = qContextMenuElement.getBoundingClientRect();
+        var menubottom = qContextMenuElement.getBoundingClientRect().bottom;
+        var menuright = qContextMenuElement.getBoundingClientRect().right;
 
-        if (elementRect.bottom > window.innerHeight) {
+        if (menubottom > window.innerHeight) {
             var currentTop = parseFloat(qContextMenuElement.style.top) || 0;
-            qContextMenuElement.style.top = (currentTop - 80) + 'px';
+            qContextMenuElement.style.top = (currentTop - (menubottom - window.innerHeight) - 5) + 'px';
+        }
+
+        if (menuright > window.innerWidth) {
+            var currentLeft = parseFloat(qContextMenuElement.style.left) || 0;
+            qContextMenuElement.style.left = (currentLeft - (menuright - window.innerWidth) - 5) + 'px';
         }
     }
 }
