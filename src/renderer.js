@@ -16,131 +16,118 @@ const editIconDark = `
 </i>
 `;
 
-function MenuEven(event) {
-    var url = window.location.href;
-    if (url.indexOf("#/main/message") == -1 && url.indexOf("#/chat/") == -1) return;
+const SEPARATOR_HTML = `
+<div class="q-context-menu-separator" role="separator"></div>
+`;
 
-    var clickedElement = event.target;
-    console.log(clickedElement.tagName);
-    if (clickedElement.tagName !== 'DIV' && clickedElement.tagName !== 'SPAN') return;
-    if (clickedElement.id === "qContextMenu" || clickedElement.id === 'mimo_repeater_btn') return;
-
-    var qThemeValue = document.body.getAttribute('q-theme');
-    var qContextMenuElement = document.querySelector("#qContextMenu.q-context-menu.q-context-menu__mixed-type");
-
-    if (qContextMenuElement) {
-
-        if (qContextMenuElement.querySelector("#mimo_msg_btn")) return
-
-        var separatorDiv = document.createElement("div");
-        separatorDiv.id = "mimo_msg_btn"
-        separatorDiv.className = "q-context-menu-separator";
-        separatorDiv.setAttribute("role", "separator");
-        qContextMenuElement.appendChild(separatorDiv);
-
-        var deleteLink = document.createElement("a");
-        deleteLink.className = "q-context-menu-item q-context-menu-item--normal";
-        deleteLink.setAttribute("aria-disabled", "false");
-        deleteLink.setAttribute("role", "menuitem");
-        deleteLink.setAttribute("tabindex", "-1");
-
-        var icons = document.createElement('div');
-        icons.className = 'q-context-menu-item__icon q-context-menu-item__head';
-        if (qThemeValue == "light") {
-            icons.innerHTML = editIconLight;
-        } else {
-            icons.innerHTML = editIconDark;
-        }
-        
-        var deleteLinkText = document.createElement("span");
-        deleteLinkText.className = "q-context-menu-item__text";
-        deleteLinkText.textContent = "编辑消息内容";
-
-        deleteLink.appendChild(icons);
-        deleteLink.appendChild(deleteLinkText);
-        qContextMenuElement.appendChild(deleteLink);
-
-        deleteLink.addEventListener("click", function() {
-            var qContextMenu = document.querySelector("#qContextMenu");
-            qContextMenu.remove();
-
-            Swal.fire({
-                title: '编辑消息内容',
-                input: 'text',
-                inputAttributes: {
-                    autocapitalize: 'off'
-                },
-                inputValue: clickedElement.textContent,
-                showCancelButton: true,
-                confirmButtonText: '确认',
-                cancelButtonText: '取消',
-                showLoaderOnConfirm: true,
-                preConfirm: (input) => {
-                    if (input.trim() === '') {
-                        Swal.showValidationMessage('请输入内容');
-                    }
-                    return input;
-                },
-                allowOutsideClick: () => !Swal.isLoading()
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    clickedElement.textContent = result.value;
-                }
-            });
-        });
-
-        var menubottom = qContextMenuElement.getBoundingClientRect().bottom;
-        var menuright = qContextMenuElement.getBoundingClientRect().right;
-
-        if (menubottom > window.innerHeight) {
-            var currentTop = parseFloat(qContextMenuElement.style.top) || 0;
-            qContextMenuElement.style.top = (currentTop - (menubottom - window.innerHeight) - 5) + 'px';
-        }
-
-        if (menuright > window.innerWidth) {
-            var currentLeft = parseFloat(qContextMenuElement.style.left) || 0;
-            qContextMenuElement.style.left = (currentLeft - (menuright - window.innerWidth) - 5) + 'px';
-        }
+function generateEditHtml() {
+  let editIcon = editIconLight;
+  var qThemeValue = document.body.getAttribute("q-theme");
+  if (qThemeValue) {
+    if (qThemeValue == "light") {
+      editIcon = editIconLight;
+    } else {
+      editIcon = editIconDark;
     }
+  }
+  return `
+<a
+  id="edit_message_lqk"
+  class="q-context-menu-item q-context-menu-item--normal"
+  aria-disabled="false"
+  role="menuitem"
+  tabindex="-1"
+>
+  <div class="q-context-menu-item__icon q-context-menu-item__head">
+${editIcon}
+  </div>
+  <span class="q-context-menu-item__text">编辑消息</span>
+</a>
+`;
 }
 
+function menuEventListener(event) {
+  const { target } = event;
+  const { classList } = target;
+  if (
+    ["text-normal", "message-content", "msg-content-container"].includes(
+      classList[0]
+    )
+  ) {
+    // 获取右键菜单
+    const qContextMenu = document.querySelector("#qContextMenu");
+    // 插入分隔线
+    qContextMenu.insertAdjacentHTML("beforeend", SEPARATOR_HTML);
+    // 插入编辑消息
+    qContextMenu.insertAdjacentHTML("beforeend", generateEditHtml());
+    // 调整右键菜单位置
+    const rect = qContextMenu.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight) {
+      qContextMenu.style.top = `${window.innerHeight - rect.height - 8}px`;
+    }
+    // 按键监听
+    const edit_message = qContextMenu.querySelector("#edit_message_lqk");
+    edit_message.addEventListener("click", () => {
+      // 获取最里层元素
+      const textNormal = target.querySelector(".text-normal");
+      const targetElement = textNormal ? textNormal : target;
+      const { innerText: rawText } = targetElement;
+      if (rawText) {
+        Swal.fire({
+          title: "编辑消息内容",
+          input: "text",
+          inputAttributes: {
+            autocapitalize: "off",
+          },
+          inputValue: rawText,
+          showCancelButton: true,
+          confirmButtonText: "确认",
+          cancelButtonText: "取消",
+          showLoaderOnConfirm: true,
+          preConfirm: (input) => {
+            if (input.trim() === "") {
+              Swal.showValidationMessage("请输入内容");
+            }
+            return input;
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
+        }).then((result) => {
+          if (result.isConfirmed) {
+            targetElement.innerText = `${result.value}`;
+          }
+        });
+      }
+      // 关闭右键菜单
+      qContextMenu.remove();
+    });
+  }
+}
 // 页面加载完成时触发
 function onLoad() {
+  const before_js = document.querySelector("#mimo_msg_js");
+  if (before_js) {
+    before_js.remove();
+  }
 
-    const before_js = document.querySelector("#mimo_msg_js");
-    if (before_js) {
-        before_js.remove();
-    }
+  const before_css = document.querySelector("#mimo_msg_css");
+  if (before_css) {
+    before_css.remove();
+  }
 
-    const before_css = document.querySelector("#mimo_msg_css");
-    if (before_css) {
-        before_css.remove();
-    }
+  const link = document.createElement("link");
+  link.id = "mimo_msg_css";
+  link.rel = "stylesheet";
+  link.type = "text/css";
+  link.href = `https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.css`;
+  document.head.appendChild(link);
 
-    const link = document.createElement("link");
-    link.id = "mimo_msg_css"
-    link.rel = "stylesheet"
-    link.type = "text/css"
-    link.href = `https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.css`
-    document.head.appendChild(link);
+  const script = document.createElement("script");
+  script.id = "mimo_msg_js";
+  script.defer = "defer";
+  script.src = `https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.js`;
+  document.head.appendChild(script);
 
-    const script = document.createElement("script");
-    script.id = "mimo_msg_js"
-    script.defer = "defer";
-    script.src = `https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.js`;
-    document.head.appendChild(script);
-
-    window.addEventListener("contextmenu", MenuEven);
+  document.addEventListener("contextmenu",menuEventListener);
 }
 
-
-// 打开设置界面时触发
-function onConfigView(view) {
-
-}
-
-
-// 这两个函数都是可选的
-export {
-    onLoad
-}
+onLoad();

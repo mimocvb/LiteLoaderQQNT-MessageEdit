@@ -1,21 +1,24 @@
 {
-    "manifest_version": 3,
+    "manifest_version": 4,
     "type": "extension",
     "name": "QQ消息修改",
     "slug": "MessageEdit",
     "description": "聊天界面，右键点击文本消息，选择【编辑消息内容】编辑即可",
-    "version": "1.0.7",
-    "thumbnail": "./icon.png",
-    "author": {
-        "name": "MIMO",
-        "link": "https://github.com/mimocvb"
-    },
+    "version": "1.0.8",
+    "icon": "./icon.png",
+    "author": [{
+            "name": "MIMO",
+            "link": "https://github.com/mimocvb"
+        }, {
+            "name": "怜渠客",
+            "link": "https://github.com/lianquke"
+        }
+    ],
     "repository": {
-        "repo": "mimocvb/LiteLoaderQQNT-MessageEdit",
-        "branch": "v3",
-        "use_release": {
-            "tag": "latest",
-            "name": "MessageEdit.zip"
+        "repo": "lianquke/LiteLoaderQQNT-MessageEdit",
+        "branch": "main",
+        "release": {
+            "tag": "latest"
         }
     },
     "platform": [
